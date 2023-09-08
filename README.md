@@ -19,13 +19,15 @@ In order to assess your ability but not consume too much of your time, please be
 
 The task should take you a maximum of 3 hours, of which we personally recommend spending around 45 minutes planning and preparing a report of your planned approaches, and the remaining time on showing off your coding prowess.
 
+Primarily we work in Python or C++ for our AI services, so demonstrations of these skills would be ideal. If you have skills to show from other languages (alternative approaches) however, please include them in your report as we are interested in seeing your full range of skills.
+
 # Setup & Environment
 
 To access the video, kindly follow this link: [Video](https://reach-industries-candidate-tests.s3.eu-west-2.amazonaws.com/AICandidateTest-FINAL.mp4). In certain browsers, you might need to right-click on the link and choose "Save Link As" to initiate the download.
 
 # Deliverables & How to submit
 
-For the submission of this test, please fork this git repository. Your submission should include a Dockerfile for building a docker image which can run your code on a standard linux environment with docker installed (nvidia-docker will also be available when executing your code should you wish to use GPU enhancements). You should include all necessary code files and model weights (if necessary due to filesize, upload to an external location and include a download in your Dockerfile) and a readme explaining how to execute your code in your submission. In an ideal world we will be able to pull your repository, build the docker and execute your code. Occasionally due to things out of our control this may not be the case, in this situation we may contact you to discuss your approach instead.
+For the submission of this test, please fork this git repository. We would prefer a submission with a Dockerfile for building a docker image which can run your code on a standard linux environment with docker installed (nvidia-docker will also be available when executing your code should you wish to use GPU enhancements), We will also accept code files as long as you provide clear instructions on execution and must require little to no editing from our side. You should include all necessary code files and model weights (if necessary due to filesize, upload to an external location and include a download in your Dockerfile) and a readme explaining how to execute your code in your submission. In an ideal world we will be able to pull your repository, build the docker and execute your code. Occasionally due to things out of our control this may not be the case, in this situation we may contact you to discuss your approach instead.
 
 You should also include a report of your research into the methodologies you would take given more time (for instance assume this were a 2-3 week project) in whichever format you prefer (assuming it can be opened without specialised software). Please put this at the root of your repository with an obvious name. Your report should cover, possible techinques, pros/cons of each technique, cost of implementation and any potential issues the method could face when running in production. Please ensure to cite any references (and note that as an engineer stack overflow is an acceptable resource). This can be as simple as a raw text document as long as your thought processes are clear.
 
@@ -33,7 +35,25 @@ You should also include a report of your research into the methodologies you wou
 
 # Evaluation Criteria
 
-We have two key aims in this technical test. The first is of course to see your coding ability and ensure you are capable of performing the technical side of the work. The second, and potentially more important, is to understand your thought processes and problem solving techniques. In what is still a relatively novel field, the approaches you take in completing this test will reflect similar challenges to what we face in our day to day work. The report therefore is your opportunity to demonstrate any potential non-"route one" ways to solve problems; if time and resources were not as limited as they are for the test.
+We have two key aims in this technical test. The first is of course to see your coding ability and the second your problem solving/research skills.
+
+## Coding ability
+
+We will assess your code on metrics such as:
+
+* Code clarity (is the code easy to follow)
+* Code structure (is the code easy to adapt/port/add to/maintain)
+* General practices
+* Success at completing task (we are not looking for perfection as you only have a few hours)
+
+## Problem Solving/Research
+
+We will assess your critical thinking skills on metrics such as:
+
+* Familiarity with common libraries/frameworks
+* Knowledge of standard legacy/modern computer vision methods
+* End-to-end planning of solving a CV problem
+* Out of the box thinking
 
 # FAQ
 ## 1.
