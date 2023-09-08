@@ -1,28 +1,39 @@
 <p align="center">
-<img src=https://via.placeholder.com/150/>
+<img src=./RI-SeniorCVTest-Github.png>
 </p>
-
-***Replace any content text in bold.***
 
 # Test Introduction
 
-***Guidance Text: Here, provide a brief overview of the context and background for the test. What is the main objective of this test? Why is it important for the role in question? Set the scene for the candidate so they can understand the larger picture.***
+You have been provided with the video "AICandidateTest-FINAL.mp4," which offers a top-down view of experimental work within a fume hood. The objective of this test is to evaluate your proficiency in computer vision, technical acumen, and problem-solving capabilities. You are free to tackle the challenges using your preferred programming language and any applicable tools or techniques. Treat this test as if you were undertaking a regular day of work.
 
 # Task
 
-***Guidance Text: Clearly describe the specific task(s) the candidate needs to complete. This section should contain all the necessary details, requirements, and any assumptions you want the candidate to make. Ensure to be as precise as possible to avoid misunderstandings.***
+The test encompasses the following objectives:
+
+* Identify different object types in the scene (petri dishes, bottles, hands).
+* Determine interactions between objects (e.g., hand touches dish, dish is filled).
+* Track the count of filled dishes as the scene unfolds.
+* Identify any additional vision-based insights in the scene that you find compelling.
+
+In order to assess your ability but not consume too much of your time, please be thorough in researching methods before attempting any implementation. Prioritise the tasks above from top to bottom in terms of implementation, ensuring only to add your own insights after completing the first bullet points if you still have time.
+
+The task should take you a maximum of 3 hours, of which we personally recommend spending around 45 minutes planning and preparing a report of your planned approaches, and the remaining time on showing off your coding prowess.
 
 # Setup & Environment
 
-***Guidance Text: Detail any setup steps, required software, or specific environment configurations necessary to undertake the test. If there are any dependencies to be installed or initial steps to be taken before the task, mention them here.***
+To access the video, kindly follow this link: [Video](https://reach-industries-candidate-tests.s3.eu-west-2.amazonaws.com/AICandidateTest-FINAL.mp4). In certain browsers, you might need to right-click on the link and choose "Save Link As" to initiate the download.
 
 # Deliverables & How to submit
 
-***Guidance Text: Define clearly what the candidate should submit at the end of the test. For instance, do they need to submit code, a report, a presentation, or all of the above? Additionally, provide a clear procedure on how they should submit their work. This could be via a pull request, email, a specific platform, etc.***
+For the submission of this test, please fork this git repository. Your submission should include a Dockerfile for building a docker image which can run your code on a standard linux environment with docker installed (nvidia-docker will also be available when executing your code should you wish to use GPU enhancements). You should include all necessary code files and model weights (if necessary due to filesize, upload to an external location and include a download in your Dockerfile) and a readme explaining how to execute your code in your submission. In an ideal world we will be able to pull your repository, build the docker and execute your code. Occasionally due to things out of our control this may not be the case, in this situation we may contact you to discuss your approach instead.
+
+You should also include a report of your research into the methodologies you would take given more time (for instance assume this were a 2-3 week project) in whichever format you prefer (assuming it can be opened without specialised software). Please put this at the root of your repository with an obvious name. Your report should cover, possible techinques, pros/cons of each technique, cost of implementation and any potential issues the method could face when running in production. Please ensure to cite any references (and note that as an engineer stack overflow is an acceptable resource). This can be as simple as a raw text document as long as your thought processes are clear.
+
+**IMPORTANT: PLEASE DO NOT INCLUDE THE ORIGINAL VIDEO IN YOUR SUBMISSION, PROVIDE INSTRUCTIONS AS TO WHERE IT SHOULD BE PLACED IN YOUR SETUP** 
 
 # Evaluation Criteria
 
-***Guidance Text: Explain how you will be evaluating their submissions. What are the key criteria or metrics you will be looking at? This helps the candidate focus on what's essential for the test.***
+We have two key aims in this technical test. The first is of course to see your coding ability and ensure you are capable of performing the technical side of the work. The second, and potentially more important, is to understand your thought processes and problem solving techniques. In what is still a relatively novel field, the approaches you take in completing this test will reflect similar challenges to what we face in our day to day work. The report therefore is your opportunity to demonstrate any potential non-"route one" ways to solve problems; if time and resources were not as limited as they are for the test.
 
 # FAQ
 ## 1.
