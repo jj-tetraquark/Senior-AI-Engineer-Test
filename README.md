@@ -55,15 +55,8 @@ We will assess your critical thinking skills on metrics such as:
 * End-to-end planning of solving a CV problem
 * Out of the box thinking
 
-# FAQ
-## 1.
-
-## 2. 
-
-## 3.
-
 # Troubleshooting & Support
-Who @Reach.Industries?
+Test@Reach.Industries?
 
 # Terms & Conditions for Interview Tests
 
