@@ -17,7 +17,7 @@ The test encompasses the following objectives:
 
 In order to assess your ability but not consume too much of your time, please be thorough in researching methods before attempting any implementation. Prioritise the tasks above from top to bottom in terms of implementation, ensuring only to add your own insights after completing the first bullet points if you still have time.
 
-The task should take you a maximum of 3 hours, of which we personally recommend spending around 45 minutes planning and preparing a report of your planned approaches, and the remaining time on showing off your coding prowess.
+The task should take you a minimum of 3 hours, of which we personally recommend spending around 45 minutes planning and preparing a report of your planned approaches, and the remaining time on showing off your coding prowess.
 
 Primarily we work in Python or C++ for our AI services, so demonstrations of these skills would be ideal. If you have skills to show from other languages (alternative approaches) however, please include them in your report as we are interested in seeing your full range of skills.
 
