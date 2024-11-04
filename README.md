@@ -1,5 +1,5 @@
 <p align="center">
-<img src=./RI-SeniorCVTest-Github.png>
+<img src=./RI-SeniorAITest-Github.png>
 </p>
 
 # Test Introduction
