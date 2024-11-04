@@ -56,7 +56,7 @@ We will assess your critical thinking skills on metrics such as:
 * Out of the box thinking
 
 # Troubleshooting & Support
-Test@Reach.Industries?
+Test@Reach.Industries
 
 # Terms & Conditions for Interview Tests
 
