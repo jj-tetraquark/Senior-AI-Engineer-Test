@@ -48,6 +48,9 @@ def draw_detections(frame, detections):
 
 def detect_hands(frame):
     """Simple method of detecting gloves by colour filtering as the hands are orange"""
+
+    MIN_HAND_SIZE = 20 * 20
+
     frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     ORANGE_MIN = np.array([5, 50, 180], np.uint8)
     ORANGE_MAX = np.array([15, 255, 255], np.uint8)
@@ -63,6 +66,8 @@ def detect_hands(frame):
     drawn = cv2.drawContours(frame.copy(), contours, -1, (0, 255, 0), 3)
 
     detected_hands = [cv2.boundingRect(contour) for contour in contours]
+    detected_hands = [hand for hand in detected_hands if hand[2] * hand[3] > MIN_HAND_SIZE]
+
     detected_hands.sort(key=lambda hand: hand[2] * hand[3], reverse=True)
 
     return {"hand": detected_hands[:2]}
@@ -77,42 +82,53 @@ def detect_petri_dishes(frame):
         cv2.HOUGH_GRADIENT,
         2,
         50,
-        param1=100,
+        param1=80,
         param2=100,
-        minRadius=67,
+        minRadius=60,
         maxRadius=75,
     )
 
     frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     empty_dishes = []
-    full_dishes = []
+    filled_dish = []
+    filled_dish_with_lid = []
 
-    if len(circles) == 0:
-        return
 
-    for circle in circles[0]:
-        x, y, r = np.around(circle).astype(int).tolist()
-        # consider a 11 pixel patch about the centre
-        roi = frame_hsv[y - 10 : y + 10, x - 10 : x + 10, :]
-        hue = np.mean(roi[:, :, 0])
-        sat = np.mean(roi[:, :, 1])
-        val = np.mean(roi[:, :, 2])
+    if circles is not None and len(circles) > 0:
 
-        if 32 <= hue <= 40 and sat > 15 and val > 40:  # yellowish
-            full_dishes.append((x - r, y - r, r * 2, r * 2))
-        elif sat <= 16 and val > 80:  # basically gray
-            empty_dishes.append((x - r, y - r, r * 2, r * 2))
+        for circle in circles[0]:
+            x, y, r = np.around(circle).astype(int).tolist()
+            # consider a 11 pixel patch about the centre
+            roi = frame_hsv[y - 10 : y + 10, x - 10 : x + 10, :]
+            hue = np.mean(roi[:, :, 0])
+            sat = np.mean(roi[:, :, 1])
+            val = np.mean(roi[:, :, 2])
 
-        test_frame = frame.copy()
-        cv2.circle(test_frame, (x, y), r, (0, 255, 0), 2)
-        #print(f"hue: {hue}")
-        #print(f"sat: {sat}")
-        #print(f"val: {val}")
-        #cv2.imshow("circle", test_frame)
-        #cv2.waitKey(0)
-        #cv2.destroyAllWindows()
+            bbox = (x - r, y - r, r * 2, r * 2)
 
-    return {"petri dish full": full_dishes, "petri dish empty": empty_dishes}
+            if 32 <= hue <= 40 and sat > 15 and val > 40:  # yellowish
+                if sat > 35 and val > 120:
+                    filled_dish.append(bbox)
+                else:
+                    filled_dish_with_lid.append(bbox)
+            elif sat <= 16 and val > 80:  # basically gray
+                empty_dishes.append(bbox)
+
+            #test_frame = frame.copy()
+            #cv2.circle(test_frame, (x, y), r, (0, 255, 0), 2)
+            #print(f"radius: {r}")
+            #print(f"hue: {hue}")
+            #print(f"sat: {sat}")
+            #print(f"val: {val}")
+            #cv2.imshow("circle", test_frame)
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
+
+    return {
+        "petri dish filled": filled_dish,
+        "petri dish filled with lid": filled_dish_with_lid,
+        "petri dish empty": empty_dishes
+    }
 
 
 if __name__ == "__main__":
