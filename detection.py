@@ -2,6 +2,49 @@ import cv2
 import time
 import numpy as np
 
+from ultralytics import YOLO
+
+class Detector:
+    def __init__(self, classical_methods=False):
+        self._classical_methods = classical_methods
+        self.yolo = YOLO(
+            "yolo11n-finetuned.pt",
+            task="detect",
+            verbose=False
+        )
+
+    def run_yolo(self, frame):
+        results = self.yolo.predict(frame, verbose=False)
+        if len(results) == 0:
+            return {}
+
+        names = results[0].names
+        classes = results[0].boxes.cls.cpu().numpy()
+        boxes = results[0].boxes.xyxy.cpu().numpy().astype(np.int32)
+
+        objects = {}
+        for cls, bbox in zip(classes, boxes):
+            x0, y0, x1, y1 = bbox
+            w = abs(x1 - x0)
+            h = abs(y1 - y0)
+            bbox = (x0, y0, w, h)
+
+            name = names[cls]
+            if name in objects:
+                objects[name].append(bbox)
+            else:
+                objects[name] = [bbox]
+
+        return objects
+
+    def detect_objects(self, frame):
+        objects = self.run_yolo(frame)
+        if self._classical_methods:
+            objects.update(detect_petri_dishes(frame))
+            objects.update(detect_hands(frame))
+
+        return objects
+
 
 def detect_objects(frame):
     objects = {}
