@@ -1,7 +1,7 @@
 import argparse
 import cv2
 
-from detection import detect_objects, draw_detections
+from detection import Detector, draw_detections
 from state_manager import WorldState
 
 WINDOW_NAME = "window"
@@ -14,6 +14,7 @@ def parse_args():
 
 def analyse_video(fname, display=True):
     world_state = WorldState()
+    detector = Detector()
 
     cap = cv2.VideoCapture(fname)
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
@@ -28,7 +29,7 @@ def analyse_video(fname, display=True):
         if not ret:
             break
 
-        detections = detect_objects(frame)
+        detections = detector.detect_objects(frame)
         known_objects = world_state.update(detections, frame_number)
 
         if display:
