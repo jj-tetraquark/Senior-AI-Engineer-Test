@@ -4,14 +4,11 @@ import numpy as np
 
 from ultralytics import YOLO
 
+
 class Detector:
     def __init__(self, classical_methods=False):
         self._classical_methods = classical_methods
-        self.yolo = YOLO(
-            "yolo11n-finetuned.pt",
-            task="detect",
-            verbose=False
-        )
+        self.yolo = YOLO("yolo11n-finetuned.pt", task="detect", verbose=False)
 
     def run_yolo(self, frame):
         results = self.yolo.predict(frame, verbose=False)
@@ -109,7 +106,9 @@ def detect_hands(frame):
     drawn = cv2.drawContours(frame.copy(), contours, -1, (0, 255, 0), 3)
 
     detected_hands = [cv2.boundingRect(contour) for contour in contours]
-    detected_hands = [hand for hand in detected_hands if hand[2] * hand[3] > MIN_HAND_SIZE]
+    detected_hands = [
+        hand for hand in detected_hands if hand[2] * hand[3] > MIN_HAND_SIZE
+    ]
 
     detected_hands.sort(key=lambda hand: hand[2] * hand[3], reverse=True)
 
@@ -136,7 +135,6 @@ def detect_petri_dishes(frame):
     filled_dish = []
     filled_dish_with_lid = []
 
-
     if circles is not None and len(circles) > 0:
 
         for circle in circles[0]:
@@ -157,20 +155,10 @@ def detect_petri_dishes(frame):
             elif sat <= 16 and val > 80:  # basically gray
                 empty_dishes.append(bbox)
 
-            #test_frame = frame.copy()
-            #cv2.circle(test_frame, (x, y), r, (0, 255, 0), 2)
-            #print(f"radius: {r}")
-            #print(f"hue: {hue}")
-            #print(f"sat: {sat}")
-            #print(f"val: {val}")
-            #cv2.imshow("circle", test_frame)
-            #cv2.waitKey(0)
-            #cv2.destroyAllWindows()
-
     return {
         "petri dish filled": filled_dish,
         "petri dish filled with lid": filled_dish_with_lid,
-        "petri dish empty": empty_dishes
+        "petri dish empty": empty_dishes,
     }
 
 

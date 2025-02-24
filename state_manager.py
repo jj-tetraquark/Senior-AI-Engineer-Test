@@ -14,32 +14,36 @@ class InstanceObject:
 class WorldState:
     def __init__(self, movement_theshold_px=30):
         self.filled_dishes = 0
-        self._previous_summary = {}
 
         self._movement_threshold_px = movement_theshold_px
         self._last_seen_threshold = 3 * 30  # 3 seconds ago
         self._new_object_observation_threshold = 5
 
         self._known_objects = []
+        self._tracked_new_object_counts = {}
 
-    def update(self, detections, current_time):
+    def update(self, detections: dict, current_time: int):
         new_objects = self._update_existing_objects_and_determine_new_ones(
             detections, current_time
         )
         self._add_new_objects(new_objects, current_time)
         self._cull_old_objects(current_time)
-        summary = self.summarise_known_objects()
-        self.update_filled_petri_dish_count(summary)
 
-        self._previous_summary = summary
-        return summary
+        self.update_new_instance_counts()
 
+    def start_tracking_new_instances_of_object_type(self, object_type: str):
+        self._tracked_new_object_counts[object_type] = 0
 
-    def update_filled_petri_dish_count(self, summary):
-        # TODO make this less jank
-        current_filled_dishes = summary.get("petri dish filled", 0)
-        previously_filled_dishes = self._previous_summary.get("petri dish filled", 0)
-        self.filled_dishes += max(current_filled_dishes - previously_filled_dishes, 0)
+    def update_new_instance_counts(self):
+        for obj in self._known_objects:
+            if (
+                obj.object_type in self._tracked_new_object_counts
+                and obj.observation_count == self._new_object_observation_threshold
+            ):
+                self._tracked_new_object_counts[obj.object_type] += 1
+
+    def get_instance_counts(self, object_type):
+        return self._tracked_new_object_counts[object_type]
 
     def summarise_known_objects(self):
         object_counts = {}
