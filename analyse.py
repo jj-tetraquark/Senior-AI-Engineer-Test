@@ -16,10 +16,12 @@ def analyse_video(fname, display=True):
     world_state = WorldState()
     detector = Detector()
 
+    world_state.start_tracking_new_instances_of_object_type("petri dish filled")
+
     cap = cv2.VideoCapture(fname)
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
-    #cap.set(cv2.CAP_PROP_POS_FRAMES, 3250)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 3250)
     fps = cap.get(cv2.CAP_PROP_FPS)
     rate = int(1000//fps)
     frame_number = 0
@@ -42,7 +44,7 @@ def analyse_video(fname, display=True):
         frame_number += 1
 
         print(known_objects)
-        print(f"filled dishes: {world_state.filled_dishes}")
+        print(f"filled dishes: {world_state.get_instance_counts('petri dish filled')}")
 
 
 def main():
