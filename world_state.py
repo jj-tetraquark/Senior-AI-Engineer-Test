@@ -17,7 +17,7 @@ class InstanceObject:
 
 
 class WorldState:
-    def __init__(self, movement_theshold_px=30):
+    def __init__(self, movement_theshold_px: int = 30):
         self._movement_threshold_px = movement_theshold_px
         self._last_seen_threshold = 5
         self._new_object_observation_threshold = 5
@@ -33,12 +33,9 @@ class WorldState:
         self._add_new_objects(new_objects, current_time)
         self._cull_old_objects(current_time)
 
-        new_instances = self.detect_new_instances()
-        interactions = self.detect_interactions()
-        return {
-            "interactions": interactions,
-            "new_instances": new_instances
-        }
+        new_instances = self._detect_new_instances()
+        interactions = self._detect_interactions()
+        return {"interactions": interactions, "new_instances": new_instances}
 
     def start_tracking_new_instances_of_object_type(self, object_type: str):
         """
@@ -47,7 +44,7 @@ class WorldState:
         """
         self._new_instances_to_track.append(object_type)
 
-    def detect_new_instances(self):
+    def _detect_new_instances(self):
         new_instances = {obj: 0 for obj in self._new_instances_to_track}
         for obj in self._known_objects:
             if (
@@ -69,7 +66,7 @@ class WorldState:
             (object_a, object_b, intersection_threshold, verb)
         )
 
-    def detect_interactions(self):
+    def _detect_interactions(self):
         interactions = []
         for interaction in self._interactions_to_track:
             object_a, object_b, intersection_thresh, verb = interaction

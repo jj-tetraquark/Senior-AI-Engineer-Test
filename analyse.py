@@ -1,24 +1,33 @@
 import argparse
-
-import cv2
 import time
 
+import cv2
+
 from detection import Detector, draw_detections
-from world_state import WorldState
 from event_log import EventLog
+from world_state import WorldState
 
 WINDOW_NAME = "window"
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input-file", help="Name of video file to analyse", required=True)
-    parser.add_argument("-o", "--output-log", help="Optional output log file", default=None)
-    parser.add_argument("--no-display", help="Disable video playback with detection annotations", action="store_false")
+    parser.add_argument(
+        "-i", "--input-file", help="Name of video file to analyse", required=True
+    )
+    parser.add_argument(
+        "-o", "--output-log", help="Optional output log file", default=None
+    )
+    parser.add_argument(
+        "--no-display",
+        help="Disable video playback with detection annotations",
+        action="store_false",
+    )
+
     return parser.parse_args()
 
 
-def analyse_video(fname, output_file, display=True):
+def analyse_video(fname, output_file: str, display: bool = True):
     world_state = WorldState()
     detector = Detector()
 
@@ -83,8 +92,6 @@ def analyse_video(fname, output_file, display=True):
                     break
 
             frame_number += 1
-
-            #print(f"filled dishes: {world_state.get_instance_counts('petri dish filled')}")
 
 
 def main():

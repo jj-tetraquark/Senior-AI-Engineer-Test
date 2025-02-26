@@ -42,11 +42,13 @@ class EventLog:
             self._log_event(
                 time,
                 f"{count} new instance of {obj}. "
-                f"Total is now: {self._new_instance_counts[obj]}"
+                f"Total is now: {self._new_instance_counts[obj]}",
             )
 
     def _update_interactions(self, time, interactions):
-        interaction_changes = set(interactions).symmetric_difference(self._current_interactions)
+        interaction_changes = set(interactions).symmetric_difference(
+            self._current_interactions
+        )
 
         for change in interaction_changes:
             object_a, object_b, verb = change

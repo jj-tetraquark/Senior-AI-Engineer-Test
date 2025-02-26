@@ -1,3 +1,4 @@
+import sys
 import time
 
 import cv2
@@ -6,11 +7,11 @@ from ultralytics import YOLO
 
 
 class Detector:
-    def __init__(self, classical_methods=False):
-        self._classical_methods = classical_methods
+    def __init__(self, use_classical_methods: bool = False):
+        self._use_classical_methods = use_classical_methods
         self.yolo = YOLO("yolo11n-finetuned.pt", task="detect", verbose=False)
 
-    def run_yolo(self, frame):
+    def _run_yolo(self, frame) -> dict:
         results = self.yolo.predict(frame, verbose=False)
         if len(results) == 0:
             return {}
@@ -34,23 +35,23 @@ class Detector:
 
         return objects
 
-    def detect_objects(self, frame):
-        objects = self.run_yolo(frame)
-        if self._classical_methods:
+    def detect_objects(self, frame: cv2.typing.MatLike) -> dict:
+        objects = self._run_yolo(frame)
+        if self._use_classical_methods:
             objects.update(detect_petri_dishes(frame))
             objects.update(detect_hands(frame))
 
         return objects
 
 
-def detect_objects(frame):
+def detect_objects(frame: cv2.typing.MatLike):
     objects = {}
     objects.update(detect_petri_dishes(frame))
     objects.update(detect_hands(frame))
     return objects
 
 
-def draw_detections(frame, detections):
+def draw_detections(frame: cv2.typing.MatLike, detections: dict) -> cv2.typing.MatLike:
     for label, instances in detections.items():
         for coords in instances:
             x, y, w, h = coords
@@ -86,7 +87,7 @@ def draw_detections(frame, detections):
     return frame
 
 
-def detect_hands(frame):
+def detect_hands(frame: cv2.typing.MatLike) -> dict:
     """Simple method of detecting gloves by colour filtering as the hands are orange"""
 
     MIN_HAND_SIZE = 20 * 20
@@ -103,8 +104,6 @@ def detect_hands(frame):
         thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
 
-    drawn = cv2.drawContours(frame.copy(), contours, -1, (0, 255, 0), 3)
-
     detected_hands = [cv2.boundingRect(contour) for contour in contours]
     detected_hands = [
         hand for hand in detected_hands if hand[2] * hand[3] > MIN_HAND_SIZE
@@ -115,7 +114,7 @@ def detect_hands(frame):
     return {"hand": detected_hands[:2]}
 
 
-def detect_petri_dishes(frame):
+def detect_petri_dishes(frame: cv2.typing.MatLike) -> dict:
     """Simple method of detecting petri dishes using Hough Circles"""
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -163,7 +162,7 @@ def detect_petri_dishes(frame):
 
 
 if __name__ == "__main__":
-    frame = cv2.imread("test_frame.png")
+    frame = cv2.imread(sys.argv[1])
     start = time.time()
     result = detect_objects(frame)
     end = time.time()
