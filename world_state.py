@@ -1,8 +1,6 @@
 import itertools
 from dataclasses import dataclass
 
-import numpy as np
-
 from utils import BoundingBox, Point, intersection_area_of_two_bboxs
 
 
@@ -20,8 +18,6 @@ class InstanceObject:
 
 class WorldState:
     def __init__(self, movement_theshold_px=30):
-        self.filled_dishes = 0
-
         self._movement_threshold_px = movement_theshold_px
         self._last_seen_threshold = 3 * 30  # 3 seconds ago
         self._new_object_observation_threshold = 5
@@ -29,6 +25,7 @@ class WorldState:
         self._known_objects = []
         self._tracked_new_object_counts = {}
         self._interactions_to_track = []
+        self._current_interactions = []
 
     def update(self, detections: dict, current_time: int):
         new_objects = self._update_existing_objects_and_identify_new_ones(
@@ -59,6 +56,9 @@ class WorldState:
     def get_instance_counts(self, object_type):
         return self._tracked_new_object_counts[object_type]
 
+    def get_current_interactions(self):
+        return self._current_interactions
+
     def start_tracking_object_interactions(
         self,
         object_a: str,
@@ -71,6 +71,7 @@ class WorldState:
         )
 
     def detect_interactions(self):
+        self._current_interactions = []
         for interaction in self._interactions_to_track:
             object_a, object_b, intersection_thresh, verb = interaction
             object_a_bboxes = [
@@ -87,7 +88,7 @@ class WorldState:
                 )
 
                 if intersection_area >= intersection_thresh_px:
-                    print(f"{object_a} is {verb} {object_b}")
+                    self._current_interactions.append((object_a, object_b, verb))
 
     def summarise_known_objects(self):
         object_counts = {}
