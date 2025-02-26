@@ -1,6 +1,7 @@
 import argparse
 
 import cv2
+import time
 
 from detection import Detector, draw_detections
 from world_state import WorldState
@@ -63,13 +64,18 @@ def analyse_video(fname, display=True):
         if not ret:
             break
 
+        start = time.time()
         detections = detector.detect_objects(frame)
         known_objects = world_state.update(detections, frame_number)
+        end = time.time()
 
         if display:
             frame = draw_detections(frame, detections)
             cv2.imshow(WINDOW_NAME, frame)
-            key = cv2.waitKey(0)
+
+            delay = max(1, int(rate - (end - start) * 1000))
+
+            key = cv2.waitKey(delay)
             if key == ord("q"):
                 break
 
