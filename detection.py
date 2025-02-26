@@ -9,10 +9,10 @@ from ultralytics import YOLO
 class Detector:
     def __init__(self, use_classical_methods: bool = False):
         self._use_classical_methods = use_classical_methods
-        self.yolo = YOLO("models/yolo11n-finetuned.pt", task="detect", verbose=False)
+        self._yolo = YOLO("models/yolo11n-finetuned.pt", task="detect", verbose=False)
 
     def _run_yolo(self, frame) -> dict:
-        results = self.yolo.predict(frame, verbose=False)
+        results = self._yolo.predict(frame, verbose=False)
         if len(results) == 0:
             return {}
 

@@ -1,0 +1,21 @@
+new_instances_to_track:
+  - "petri dish filled"
+
+interactions_to_track:
+  - ["left hand", "petri dish empty", "touching", 0.3]
+  - ["left hand", "petri dish filled", "touching", 0.5]
+  - ["left hand", "petri dish filled with lid", "touching", 0.5]
+  - ["left hand", "bottle", "holding", 0.5]
+  - ["right hand", "petri dish empty", "touching", 0.3]
+  - ["right hand", "petri dish filled", "touching", 0.5]
+  - ["right hand", "petri dish filled with lid", "touching", 0.5]
+  - ["right hand", "bottle", "holding", 0.4]
+  - ["bottle cap", "bottle", "attached to", 0.5]
+
+detector:
+  use_classical_methods: false
+
+world_state:
+  movement_theshold_px: 30
+  new_object_observation_threshold: 5
+  last_seen_threshold: 10

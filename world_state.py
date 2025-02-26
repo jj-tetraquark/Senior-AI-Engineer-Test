@@ -17,10 +17,15 @@ class InstanceObject:
 
 
 class WorldState:
-    def __init__(self, movement_theshold_px: int = 30):
+    def __init__(
+        self,
+        last_seen_threshold: int = 5,
+        new_object_observation_threshold: int = 5,
+        movement_theshold_px: int = 30,
+    ):
         self._movement_threshold_px = movement_theshold_px
-        self._last_seen_threshold = 5
-        self._new_object_observation_threshold = 5
+        self._last_seen_threshold = last_seen_threshold
+        self._new_object_observation_threshold = new_object_observation_threshold
 
         self._known_objects = []
         self._new_instances_to_track = []
@@ -71,10 +76,10 @@ class WorldState:
         for interaction in self._interactions_to_track:
             object_a, object_b, intersection_thresh, verb = interaction
             object_a_bboxes = [
-                obj.bbox for obj in self._known_objects if obj.object_type == object_a
+                obj.bbox for obj in self._known_objects if obj.object_type == object_a and self._is_established(obj)
             ]
             object_b_bboxes = [
-                obj.bbox for obj in self._known_objects if obj.object_type == object_b
+                obj.bbox for obj in self._known_objects if obj.object_type == object_b and self._is_established(obj)
             ]
 
             for a_bbox, b_bbox in itertools.product(object_a_bboxes, object_b_bboxes):
@@ -88,10 +93,13 @@ class WorldState:
 
         return interactions
 
+    def _is_established(self, obj):
+        return obj.observation_count >= self._new_object_observation_threshold
+
     def summarise_known_objects(self):
         object_counts = {}
         for obj in self._known_objects:
-            if obj.observation_count < self._new_object_observation_threshold:
+            if not self._is_established(obj):
                 continue
 
             if obj.object_type in object_counts:
@@ -144,6 +152,6 @@ class WorldState:
 
     def _should_cull_object(self, obj, current_time):
         return obj.last_seen < (current_time - self._last_seen_threshold) or (
-            obj.observation_count < self._new_object_observation_threshold
+            not self._is_established(obj)
             and obj.last_seen < (current_time - 10)
         )

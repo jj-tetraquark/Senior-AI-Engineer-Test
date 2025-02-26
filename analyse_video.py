@@ -1,5 +1,6 @@
 import argparse
 import time
+import yaml
 
 import cv2
 
@@ -7,7 +8,7 @@ from detection import Detector, draw_detections
 from event_log import EventLog
 from world_state import WorldState
 
-WINDOW_NAME = "window"
+WINDOW_NAME = "Object Detections"
 
 
 def parse_args():
@@ -27,45 +28,22 @@ def parse_args():
     return parser.parse_args()
 
 
-def analyse_video(fname, output_file: str, display: bool = True):
-    world_state = WorldState()
-    detector = Detector()
+def analyse_video(fname, config: dict, output_file: str, display: bool = True):
+    world_state = WorldState(**config["world_state"])
+    detector = Detector(**config["detector"])
 
-    world_state.start_tracking_new_instances_of_object_type("petri dish filled")
-    world_state.start_tracking_object_interactions(
-        "left hand", "petri dish empty", verb="touching"
-    )
-    world_state.start_tracking_object_interactions(
-        "right hand", "petri dish empty", verb="touching"
-    )
-    world_state.start_tracking_object_interactions(
-        "left hand", "petri dish filled", verb="touching"
-    )
-    world_state.start_tracking_object_interactions(
-        "right hand", "petri dish filled", verb="touching"
-    )
-    world_state.start_tracking_object_interactions(
-        "left hand", "petri dish filled with lid", verb="touching"
-    )
-    world_state.start_tracking_object_interactions(
-        "right hand", "petri dish filled with lid", verb="touching"
-    )
+    for obj in config["new_instances_to_track"]:
+        world_state.start_tracking_new_instances_of_object_type(obj)
 
-    world_state.start_tracking_object_interactions(
-        "right hand", "bottle", verb="holding"
-    )
-    world_state.start_tracking_object_interactions(
-        "left hand", "bottle", verb="holding"
-    )
-
-    world_state.start_tracking_object_interactions(
-        "bottle cap", "bottle", verb="attatched to"
-    )
+    for obj_a, obj_b, verb, intersection_threshold in config["interactions_to_track"]:
+        world_state.start_tracking_object_interactions(
+                obj_a, obj_b, intersection_threshold, verb
+        )
 
     cap = cv2.VideoCapture(fname)
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 3250)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 4250)
     fps = cap.get(cv2.CAP_PROP_FPS)
     rate = int(1000 // fps)
     frame_number = 0
@@ -87,7 +65,7 @@ def analyse_video(fname, output_file: str, display: bool = True):
                 cv2.imshow(WINDOW_NAME, frame)
                 delay = max(1, int(rate - (end - start) * 1000))
 
-                key = cv2.waitKey(delay)
+                key = cv2.waitKey(0)
                 if key == ord("q"):
                     break
 
@@ -96,7 +74,9 @@ def analyse_video(fname, output_file: str, display: bool = True):
 
 def main():
     args = parse_args()
-    analyse_video(args.input_file, args.output_log, args.no_display)
+    with open("config.yaml", 'r') as f:
+        config = yaml.safe_load(f)
+    analyse_video(args.input_file, config, args.output_log, args.no_display)
 
 
 if __name__ == "__main__":
