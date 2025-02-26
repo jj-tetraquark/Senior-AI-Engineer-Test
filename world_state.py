@@ -19,13 +19,12 @@ class InstanceObject:
 class WorldState:
     def __init__(self, movement_theshold_px=30):
         self._movement_threshold_px = movement_theshold_px
-        self._last_seen_threshold = 3 * 30  # 3 seconds ago
+        self._last_seen_threshold = 5
         self._new_object_observation_threshold = 5
 
         self._known_objects = []
-        self._tracked_new_object_counts = {}
+        self._new_instances_to_track = []
         self._interactions_to_track = []
-        self._current_interactions = []
 
     def update(self, detections: dict, current_time: int):
         new_objects = self._update_existing_objects_and_identify_new_ones(
@@ -34,30 +33,30 @@ class WorldState:
         self._add_new_objects(new_objects, current_time)
         self._cull_old_objects(current_time)
 
-        self.update_new_instance_counts()
-        self.detect_interactions()
-        return self.summarise_known_objects()
+        new_instances = self.detect_new_instances()
+        interactions = self.detect_interactions()
+        return {
+            "interactions": interactions,
+            "new_instances": new_instances
+        }
 
     def start_tracking_new_instances_of_object_type(self, object_type: str):
         """
-        Initialises a counter to track the amount of times a new object of a given type
-        appears in the scene.
+        New instances of the object_type passed to this function will be returned
+        on the called to the update() function when they are detected
         """
-        self._tracked_new_object_counts[object_type] = 0
+        self._new_instances_to_track.append(object_type)
 
-    def update_new_instance_counts(self):
+    def detect_new_instances(self):
+        new_instances = {obj: 0 for obj in self._new_instances_to_track}
         for obj in self._known_objects:
             if (
-                obj.object_type in self._tracked_new_object_counts
+                obj.object_type in self._new_instances_to_track
                 and obj.observation_count == self._new_object_observation_threshold
             ):
-                self._tracked_new_object_counts[obj.object_type] += 1
+                new_instances[obj.object_type] += 1
 
-    def get_instance_counts(self, object_type):
-        return self._tracked_new_object_counts[object_type]
-
-    def get_current_interactions(self):
-        return self._current_interactions
+        return new_instances
 
     def start_tracking_object_interactions(
         self,
@@ -71,7 +70,7 @@ class WorldState:
         )
 
     def detect_interactions(self):
-        self._current_interactions = []
+        interactions = []
         for interaction in self._interactions_to_track:
             object_a, object_b, intersection_thresh, verb = interaction
             object_a_bboxes = [
@@ -88,7 +87,9 @@ class WorldState:
                 )
 
                 if intersection_area >= intersection_thresh_px:
-                    self._current_interactions.append((object_a, object_b, verb))
+                    interactions.append((object_a, object_b, verb))
+
+        return interactions
 
     def summarise_known_objects(self):
         object_counts = {}
