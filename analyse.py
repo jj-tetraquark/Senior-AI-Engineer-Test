@@ -3,7 +3,7 @@ import argparse
 import cv2
 
 from detection import Detector, draw_detections
-from state_manager import WorldState
+from world_state import WorldState
 
 WINDOW_NAME = "window"
 
