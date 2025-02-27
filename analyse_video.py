@@ -43,7 +43,7 @@ def analyse_video(fname, config: dict, output_file: str, display: bool = True):
     cap = cv2.VideoCapture(fname)
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 4250)
+    #cap.set(cv2.CAP_PROP_POS_FRAMES, 4250)
     fps = cap.get(cv2.CAP_PROP_FPS)
     rate = int(1000 // fps)
     frame_number = 0
@@ -65,7 +65,7 @@ def analyse_video(fname, config: dict, output_file: str, display: bool = True):
                 cv2.imshow(WINDOW_NAME, frame)
                 delay = max(1, int(rate - (end - start) * 1000))
 
-                key = cv2.waitKey(0)
+                key = cv2.waitKey(delay)
                 if key == ord("q"):
                     break
 

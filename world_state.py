@@ -10,6 +10,7 @@ class InstanceObject:
     bbox: BoundingBox
     observation_count: int = 0
     last_seen: int = -1
+    reported: bool = False
 
     @property
     def centroid(self):
@@ -54,9 +55,10 @@ class WorldState:
         for obj in self._known_objects:
             if (
                 obj.object_type in self._new_instances_to_track
-                and obj.observation_count == self._new_object_observation_threshold
+                and self._is_established(obj) and not obj.reported
             ):
                 new_instances[obj.object_type] += 1
+                obj.reported = True
 
         return new_instances
 
