@@ -14,6 +14,7 @@ interactions_to_track:
 
 detector:
   use_classical_methods: false
+  use_yolo: true
 
 world_state:
   movement_theshold_px: 30

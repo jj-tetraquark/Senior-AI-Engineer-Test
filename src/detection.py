@@ -7,8 +7,9 @@ from ultralytics import YOLO
 
 
 class Detector:
-    def __init__(self, use_classical_methods: bool = False):
+    def __init__(self, use_yolo: bool = True, use_classical_methods: bool = False):
         self._use_classical_methods = use_classical_methods
+        self._use_yolo = use_yolo
         self._yolo = YOLO("models/yolo11n-finetuned.pt", task="detect", verbose=False)
 
     def _run_yolo(self, frame) -> dict:
@@ -36,7 +37,9 @@ class Detector:
         return objects
 
     def detect_objects(self, frame: cv2.typing.MatLike) -> dict:
-        objects = self._run_yolo(frame)
+        objects = {}
+        if self._use_yolo:
+            objects.update(self._run_yolo(frame))
         if self._use_classical_methods:
             objects.update(detect_petri_dishes(frame))
             objects.update(detect_hands(frame))
