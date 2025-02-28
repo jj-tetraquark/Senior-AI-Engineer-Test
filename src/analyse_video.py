@@ -41,13 +41,14 @@ def analyse_video(fname, config: dict, output_file: str, display: bool = True):
         )
 
     cap = cv2.VideoCapture(fname)
-    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+    if display:
+        cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
-    #cap.set(cv2.CAP_PROP_POS_FRAMES, 4250)
     fps = cap.get(cv2.CAP_PROP_FPS)
     rate = int(1000 // fps)
     frame_number = 0
 
+    print(f"Analysing video {fname}")
     with EventLog(output_file) as event_log:
         while True:
             ret, frame = cap.read()
